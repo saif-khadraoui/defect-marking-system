@@ -9,7 +9,7 @@ app.use(express.json())
 require('dotenv').config()
 
 app.post("/addComment", async (req, res) => {
-  console.log("Body from jira:" + req.body.issue.key)
+  console.log("Body from jira:" + req.body.issue)
   const issue = await fetchIssue("SEARCH-664")
   console.log("ISSUE: " + issue)
   const calculatedScore = calculateScore(issue);
