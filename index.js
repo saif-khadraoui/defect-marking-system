@@ -9,16 +9,16 @@ app.use(express.json())
 require('dotenv').config()
 
 app.post("/addComment", async (req, res) => {
-  console.log("Body from jira:" + JSON.stringify(req.body))
-  const issue = await fetchIssue("SEARCH-664")
-  console.log("ISSUE: " + issue)
-  const calculatedScore = calculateScore(issue);
-  const suggestions = returnSuggestions(issue);
+  console.log("Body from jira:" + req.body.issue)
+  // const issue = await fetchIssue(req.body.issue.key)
+  // console.log("ISSUE: " + issue)
+  const calculatedScore = calculateScore(req.body);
+  const suggestions = returnSuggestions(req.body);
 
   try{
-      const response = await axios.post("https://mimecast.jira.com/rest/api/latest/issue/SEARCH-664/comment", 
+      const response = await axios.post(`https://mimecast.jira.com/rest/api/latest/issue/${req.body.issue.key}/comment`, 
           {
-            body: `[~accountid:${issue.fields.reporter.accountId}]
+            body: `[~accountid:${req.body.fields.reporter.accountId}]
                   
                   🎯 Jira Ticket Score: ${calculatedScore}/10
 
@@ -49,18 +49,18 @@ app.post("/addComment", async (req, res) => {
 })
 
 app.put("/updateComment", async (req, res) => {
-  const commentId = await fetchCommentId("SEARCH-664")
+  const commentId = await fetchCommentId(req.body.issue.key)
   console.log("COMMENT ID: " + commentId)
 
-  const issue = await fetchIssue("SEARCH-664")
-  console.log("ISSUE: " + issue)
-  const calculatedScore = calculateScore(issue);
-  const suggestions = returnSuggestions(issue);
+  // const issue = await fetchIssue("SEARCH-664")
+  // console.log("ISSUE: " + issue)
+  const calculatedScore = calculateScore(req.body);
+  const suggestions = returnSuggestions(req.body);
 
   try{
-    const response = await axios.put(`https://mimecast.jira.com/rest/api/latest/issue/SEARCH-664/comment/${commentId}`, 
+    const response = await axios.put(`https://mimecast.jira.com/rest/api/latest/issue/${req.body.issue.key}/comment/${commentId}`, 
       {
-        body: `[~accountid:${issue.fields.reporter.accountId}]
+        body: `[~accountid:${req.body.fields.reporter.accountId}]
               
               🎯 Jira Ticket Score: ${calculatedScore}/10
 
