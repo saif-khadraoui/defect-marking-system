@@ -18,7 +18,7 @@ app.post("/addComment", async (req, res) => {
   try{
       const response = await axios.post(`https://mimecast.jira.com/rest/api/latest/issue/${req.body.issue.key}/comment`, 
           {
-            body: `[~accountid:${req.body.fields.reporter.accountId}]
+            body: `[~accountid:${req.body.issue.fields.reporter.accountId}]
                   
                   🎯 Jira Ticket Score: ${calculatedScore}/10
 
