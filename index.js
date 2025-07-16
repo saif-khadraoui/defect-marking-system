@@ -9,11 +9,11 @@ app.use(express.json())
 require('dotenv').config()
 
 app.post("/addComment", async (req, res) => {
-  console.log("Body from jira:" + req.body.issue)
+  // console.log("Body from jira:" + JSON.stringify(req.body.issue))
   // const issue = await fetchIssue(req.body.issue.key)
   // console.log("ISSUE: " + issue)
-  const calculatedScore = calculateScore(req.body);
-  const suggestions = returnSuggestions(req.body);
+  const calculatedScore = calculateScore(req.body.issue);
+  const suggestions = returnSuggestions(req.body.issue);
 
   try{
       const response = await axios.post(`https://mimecast.jira.com/rest/api/latest/issue/${req.body.issue.key}/comment`, 
@@ -54,13 +54,13 @@ app.put("/updateComment", async (req, res) => {
 
   // const issue = await fetchIssue("SEARCH-664")
   // console.log("ISSUE: " + issue)
-  const calculatedScore = calculateScore(req.body);
-  const suggestions = returnSuggestions(req.body);
+  const calculatedScore = calculateScore(req.body.issue);
+  const suggestions = returnSuggestions(req.body.issue);
 
   try{
     const response = await axios.put(`https://mimecast.jira.com/rest/api/latest/issue/${req.body.issue.key}/comment/${commentId}`, 
       {
-        body: `[~accountid:${req.body.fields.reporter.accountId}]
+        body: `[~accountid:${req.body.issue.fields.reporter.accountId}]
               
               🎯 Jira Ticket Score: ${calculatedScore}/10
 
